@@ -27,6 +27,8 @@ Fehlende Modelle werden beim Start automatisch heruntergeladen. Die Modelle werd
 &#13;
 Weitere Informationen und die Anleitung zum Hinzuf&#xFC;gen zus&#xE4;tzlicher Stimmen befinden sich in der README auf GitHub.</Overview>
   <Category>AI: HomeAutomation:</Category>
+  <ExtraSearchTerms>tts text-to-speech german deutsch home assistant homeassistant wyoming kikiri kokoro voice sprachassistent</ExtraSearchTerms>
+  <Changes>Initial Community Applications release</Changes>
   <WebUI/>
   <TemplateURL>https://raw.githubusercontent.com/marco-taylor/kikiri-tts-german-wyoming/main/templates/kikiri-tts-german-wyoming.xml</TemplateURL>
   <Icon>https://raw.githubusercontent.com/marco-taylor/kikiri-tts-german-wyoming/main/icons/kikiri-tts.png</Icon>
