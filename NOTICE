@@ -3,12 +3,23 @@ Copyright 2026 marco-taylor
 
 Licensed under the Apache License, Version 2.0.
 
-This project is an independent community project for providing German
+This project is an independent community project providing German
 text-to-speech functionality with Wyoming support for Home Assistant.
 
 This project includes, adapts, interfaces with, or depends on components
-from third-party open-source projects, including Kikiri, Kokoro, Misaki
-and Wyoming-related software.
+from third-party open-source projects, including:
+
+Kikiri TTS
+https://github.com/semidark/kikiri-tts
+
+Kokoro
+https://github.com/hexgrad/kokoro
+
+Misaki
+https://github.com/hexgrad/misaki
+
+Wyoming Protocol
+https://github.com/rhasspy/wyoming
 
 Third-party components, models and voice resources remain subject to
 their respective upstream licenses, copyright notices and attribution

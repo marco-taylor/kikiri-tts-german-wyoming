@@ -97,3 +97,28 @@ Anschließend sollten die verfügbaren TTS-Stimmen über Wyoming erkannt werden.
 ## Hinweis
 
 Dieses Projekt verwendet Komponenten aus Kikiri/Kokoro sowie weiteren Open-Source-Projekten. Die jeweiligen Lizenzen und Bedingungen der verwendeten Modelle und Abhängigkeiten sind zu beachten.
+
+## Credits & Upstream-Projekte
+
+Kikiri TTS German + Wyoming ist ein unabhängiges Community-Projekt und baut auf mehreren Open-Source-Projekten auf.
+
+Besonderer Dank gilt:
+
+- **Kikiri TTS** – deutsche TTS-Implementierung und Grundlage dieses Projekts  
+  https://github.com/semidark/kikiri-tts
+
+- **Kokoro** – zugrunde liegende Text-to-Speech-Technologie  
+  https://github.com/hexgrad/kokoro
+
+- **Misaki** – Grapheme-to-Phoneme-Verarbeitung (G2P)  
+  https://github.com/hexgrad/misaki
+
+- **Wyoming Protocol** – Protokoll für die Integration von Sprachdiensten, unter anderem mit Home Assistant  
+  https://github.com/rhasspy/wyoming
+
+Die jeweiligen Komponenten, Modelle und Sprachressourcen unterliegen den
+Lizenz- und Copyright-Bedingungen ihrer jeweiligen Upstream-Projekte.
+
+Kikiri TTS German + Wyoming ist ein unabhängiges Community-Projekt und
+ist nicht mit Kikiri, Kokoro, Home Assistant oder Unraid verbunden oder
+von diesen offiziell unterstützt.
