@@ -44,6 +44,68 @@ Unraid-Beispiel:
 
     /mnt/user/appdata/kikiri-tts-german-wyoming/models -> /app/models
 
+## Zusätzliche / Custom Stimmen
+
+Neben den bereits integrierten Stimmen **Martin** und **Victoria** können weitere kompatible Kikiri-/Kokoro-Stimmen über `KOKORO_EXTRA_VOICES` eingebunden werden.
+
+Eine zusätzliche Stimme wird in folgendem Format angegeben:
+
+```text
+name|huggingface-repository|model-datei|voice-datei
+```
+
+Mehrere zusätzliche Stimmen können durch ein Semikolon (`;`) getrennt werden.
+
+### Beispiel: Bernd
+
+Die deutsche Kikiri-Stimme **Bernd** kann ohne Änderung des Docker-Images hinzugefügt werden.
+
+**Zusätzliche Stimmen (`KOKORO_EXTRA_VOICES`):**
+
+```text
+bernd|kikiri-tts/kikiri-german-bernd|kokoro_german_bernd.pth|bernd.pt
+```
+
+Damit Bernd zusätzlich zu Martin und Victoria installiert wird:
+
+**Installierte Stimmen (`KOKORO_VOICES`):**
+
+```text
+martin,victoria,bernd
+```
+
+Optional können alle drei Stimmen beim Start des Containers vorgeladen werden:
+
+**Vorgeladene Stimmen (`KOKORO_PRELOAD`):**
+
+```text
+martin,victoria,bernd
+```
+
+Beim nächsten Start lädt der Container Modell und Voicepack von Bernd automatisch von Hugging Face herunter. Anschließend stehen **Martin, Victoria und Bernd** über die TTS-/Wyoming-Schnittstelle zur Verfügung.
+
+Die Modelle und Voicepacks werden getrennt abgelegt:
+
+```text
+models/
+├── martin/
+│   ├── model.pth
+│   └── voice.pt
+├── victoria/
+│   ├── model.pth
+│   └── voice.pt
+└── bernd/
+    ├── model.pth
+    └── voice.pt
+```
+
+Dadurch können auch Stage-2-feingetunte Stimmen mit einem eigenen Modell und Voicepack verwendet werden.
+
+> **Hinweis:** Eine Custom Voice muss mit der verwendeten Kikiri-/Kokoro-Architektur kompatibel sein. Bei einer auf einem eigenen Modell feinabgestimmten Stimme reicht das Voicepack allein nicht aus.
+
+Bernd auf Hugging Face:
+https://huggingface.co/kikiri-tts/kikiri-german-bernd
+
 ## Umgebungsvariablen
 
 Standardwerte:
