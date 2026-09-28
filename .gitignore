@@ -1,0 +1,25 @@
+# Modelle
+models/
+*.pth
+*.pt
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# Backups
+*.backup
+*.bak
+
+# Temporäre Dateien
+*.part
+*.tmp
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
