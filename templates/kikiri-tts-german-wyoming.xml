@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Name>kikiri-tts-german-wyoming</Name>
+  <Repository>ghcr.io/marco-taylor/kikiri-tts-german-wyoming:latest</Repository>
+  <Registry>https://ghcr.io/marco-taylor/kikiri-tts-german-wyoming</Registry>
+  <Network>bridge</Network>
+  <MyIP/>
+  <MyMAC/>
+  <Shell>sh</Shell>
+  <Privileged>false</Privileged>
+  <Support>https://github.com/marco-taylor/kikiri-tts-german-wyoming/issues</Support>
+  <Project>https://github.com/marco-taylor/kikiri-tts-german-wyoming</Project>
+  <ReadMe>https://github.com/marco-taylor/kikiri-tts-german-wyoming#readme</ReadMe>
+  <Overview>Lokaler deutscher Text-to-Speech-Server f&#xFC;r Home Assistant auf Basis von Kikiri/Kokoro mit Wyoming-Unterst&#xFC;tzung.&#13;
+&#13;
+Funktionen:&#13;
+&#x2022; Deutsche Text-to-Speech-Ausgabe&#13;
+&#x2022; Wyoming-Protokoll f&#xFC;r Home Assistant&#13;
+&#x2022; Stimmen Martin und Victoria&#13;
+&#x2022; Automatischer Download fehlender Sprachmodelle&#13;
+&#x2022; Persistente Speicherung der Modelle au&#xDF;erhalb des Containers&#13;
+&#x2022; Unterst&#xFC;tzung zus&#xE4;tzlicher Stimmen&#13;
+&#x2022; Einstellbare CPU-Thread-Anzahl&#13;
+&#x2022; OpenAI-kompatible TTS-API&#13;
+&#13;
+Fehlende Modelle werden beim Start automatisch heruntergeladen. Die Modelle werden persistent unter /app/models gespeichert und bleiben bei Container-Updates erhalten.&#13;
+&#13;
+Weitere Informationen und die Anleitung zum Hinzuf&#xFC;gen zus&#xE4;tzlicher Stimmen befinden sich in der README auf GitHub.</Overview>
+  <Category>AI: HomeAutomation:</Category>
+  <WebUI/>
+  <TemplateURL>https://raw.githubusercontent.com/marco-taylor/kikiri-tts-german-wyoming/main/templates/kikiri-tts-german-wyoming.xml</TemplateURL>
+  <Icon>https://raw.githubusercontent.com/marco-taylor/kikiri-tts-german-wyoming/main/icons/kikiri-tts.png</Icon>
+  <ExtraParams/>
+  <PostArgs/>
+  <CPUset/>
+  <DonateText/>
+  <DonateLink/>
+  <License>Apache-2.0</License>
+  <Date>2026-09-28</Date>
+  <Requires>Unraid with Docker support. Network access is required for the initial download of voice models.</Requires>
+  <Config Name="Wyoming-Port" Target="10203" Default="10203" Mode="tcp" Description="Wyoming-Protokoll-Port f&#xFC;r Home Assistant" Type="Port" Display="always" Required="true" Mask="false">10203</Config>
+  <Config Name="Kikiri-Modelle" Target="/app/models" Default="/mnt/user/appdata/kikiri-tts-german-wyoming/models" Mode="rw" Description="Persistenter Speicher f&#xFC;r heruntergeladene Kikiri-Sprachmodelle" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/kikiri-tts-german-wyoming/models</Config>
+  <Config Name="CPU-Threads" Target="KOKORO_THREADS" Default="4" Mode="" Description="Anzahl der von Kokoro verwendeten CPU-Threads" Type="Variable" Display="always" Required="true" Mask="false">4</Config>
+  <Config Name="Installierte Stimmen" Target="KOKORO_VOICES" Default="martin,victoria" Mode="" Description="Verf&#xFC;gbare Stimmen. Fehlende Modelle werden automatisch heruntergeladen." Type="Variable" Display="always" Required="true" Mask="false">martin,victoria</Config>
+  <Config Name="Vorgeladene Stimmen" Target="KOKORO_PRELOAD" Default="martin,victoria" Mode="" Description="Stimmen, die beim Start des TTS-Servers direkt in den Speicher geladen werden" Type="Variable" Display="always" Required="true" Mask="false">martin,victoria</Config>
+  <Config Name="Zus&#xE4;tzliche Stimmen" Target="KOKORO_EXTRA_VOICES" Default="" Mode="" Description="Zus&#xE4;tzliche Stimmdefinitionen im Format name|repository|model|voice. Mehrere Stimmen werden durch Semikolon getrennt." Type="Variable" Display="always" Required="false" Mask="false"/>
+  <Config Name="Gleichzeitige TTS-Anfragen" Target="WYOMING_TTS_CONCURRENT_REQUESTS" Default="1" Mode="" Description="Maximale Anzahl gleichzeitig verarbeiteter Wyoming-TTS-Anfragen" Type="Variable" Display="advanced" Required="true" Mask="false">1</Config>
+  <Config Name="OpenMP-Threads" Target="OMP_NUM_THREADS" Default="4" Mode="" Description="Anzahl der OpenMP-CPU-Threads" Type="Variable" Display="advanced" Required="true" Mask="false">4</Config>
+  <Config Name="MKL-Threads" Target="MKL_NUM_THREADS" Default="4" Mode="" Description="Anzahl der MKL-CPU-Threads" Type="Variable" Display="advanced" Required="true" Mask="false">4</Config>
+  <Config Name="OpenBLAS-Threads" Target="OPENBLAS_NUM_THREADS" Default="4" Mode="" Description="Anzahl der OpenBLAS-CPU-Threads" Type="Variable" Display="advanced" Required="true" Mask="false">4</Config>
+  <Config Name="NumExpr-Threads" Target="NUMEXPR_NUM_THREADS" Default="4" Mode="" Description="Anzahl der NumExpr-CPU-Threads" Type="Variable" Display="advanced" Required="true" Mask="false">4</Config>
+  <TailscaleStateDir/>
+</Container>

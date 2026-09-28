@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CommunityApplications>
+  <Profile>
+    Kikiri TTS German + Wyoming stellt eine lokale deutsche Text-to-Speech-Lösung für Home Assistant und Unraid bereit. Das Projekt verwendet Kikiri/Kokoro und unterstützt das Wyoming-Protokoll, automatische Modelldownloads und persistent gespeicherte Stimmen.
+  </Profile>
+  <Icon>https://raw.githubusercontent.com/marco-taylor/kikiri-tts-german-wyoming/main/icons/kikiri-tts.png</Icon>
+  <WebPage>https://github.com/marco-taylor/kikiri-tts-german-wyoming</WebPage>
+  <Forum>https://github.com/marco-taylor/kikiri-tts-german-wyoming/issues</Forum>
+</CommunityApplications>

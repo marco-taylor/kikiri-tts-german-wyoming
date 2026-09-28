@@ -1,0 +1,21 @@
+Kikiri TTS German + Wyoming
+Copyright 2026 marco-taylor
+
+Licensed under the Apache License, Version 2.0.
+
+This project is an independent community project for providing German
+text-to-speech functionality with Wyoming support for Home Assistant.
+
+This project includes, adapts, interfaces with, or depends on components
+from third-party open-source projects, including Kikiri, Kokoro, Misaki
+and Wyoming-related software.
+
+Third-party components, models and voice resources remain subject to
+their respective upstream licenses, copyright notices and attribution
+requirements.
+
+This project is not affiliated with or endorsed by Kikiri, Kokoro,
+Home Assistant, Unraid, or their respective developers or organizations.
+
+Project:
+https://github.com/marco-taylor/kikiri-tts-german-wyoming
