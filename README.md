@@ -106,6 +106,41 @@ Dadurch können auch Stage-2-feingetunte Stimmen mit einem eigenen Modell und Vo
 Bernd auf Hugging Face:
 https://huggingface.co/kikiri-tts/kikiri-german-bernd
 
+### Beispiel: Thorsten
+
+Die hochdeutsche Stimme **Thorsten** kann ebenfalls als Custom Voice
+eingebunden werden.
+
+**Zusätzliche Stimmen (`KOKORO_EXTRA_VOICES`):**
+
+```text
+thorsten|Thorsten-Voice/Kokoro|model.pth|voices/thorsten.pt
+```
+
+Werden Bernd und Thorsten gemeinsam verwendet:
+
+```text
+bernd|kikiri-tts/kikiri-german-bernd|kokoro_german_bernd.pth|bernd.pt;thorsten|Thorsten-Voice/Kokoro|model.pth|voices/thorsten.pt
+```
+
+**Installierte Stimmen (`KOKORO_VOICES`):**
+
+```text
+martin,victoria,bernd,thorsten
+```
+
+**Vorgeladene Stimmen (`KOKORO_PRELOAD`):**
+
+```text
+martin,victoria,bernd,thorsten
+```
+
+Beim Containerstart werden Modell und Voicepack automatisch
+heruntergeladen und über die TTS-/Wyoming-Schnittstelle bereitgestellt.
+
+Thorsten auf Hugging Face:
+https://huggingface.co/Thorsten-Voice/Kokoro
+
 ## Umgebungsvariablen
 
 Standardwerte:
