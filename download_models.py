@@ -184,19 +184,56 @@ def main():
                 "KOKORO_VOICES enthält keine Stimmen."
             )
 
-        unknown = [
-            name for name in selected
-            if name not in voices
-        ]
-
-        if unknown:
-            raise RuntimeError(
-                "Keine Download-Konfiguration für: "
-                + ", ".join(unknown)
-                + ". Über KOKORO_EXTRA_VOICES hinzufügen."
-            )
+        # Unbekannte Stimmen sind erlaubt, wenn ihre Dateien
+        # bereits manuell im models-Ordner installiert wurden.
+        manual = []
+        missing_config = []
 
         for name in selected:
+            if name in voices:
+                continue
+
+            voice_dir = MODELS_DIR / name
+            model_path = voice_dir / "model.pth"
+            voice_path = voice_dir / "voice.pt"
+
+            if (
+                model_path.is_file()
+                and model_path.stat().st_size > 0
+                and voice_path.is_file()
+                and voice_path.stat().st_size > 0
+            ):
+                manual.append(name)
+            else:
+                missing_config.append(name)
+
+        if manual:
+            print(
+                "Manuelle Stimmen  :",
+                ", ".join(manual),
+            )
+
+        if missing_config:
+            raise RuntimeError(
+                "Keine Download-Konfiguration und keine vollständigen "
+                "lokalen Modelldateien für: "
+                + ", ".join(missing_config)
+                + ". Erwartet werden model.pth und voice.pt unter "
+                "/app/models/<stimme>/ oder eine Definition über "
+                "KOKORO_EXTRA_VOICES."
+            )
+        for name in selected:
+            voice_dir = MODELS_DIR / name
+
+            if name not in voices:
+                print()
+                print("-" * 60)
+                print(f"Stimme     : {name}")
+                print("Quelle     : manuell installiert")
+                print(f"Modell     : {voice_dir / 'model.pth'}")
+                print(f"Voicepack  : {voice_dir / 'voice.pt'}")
+                print("-" * 60)
+                continue
             data = voices[name]
 
             print()
