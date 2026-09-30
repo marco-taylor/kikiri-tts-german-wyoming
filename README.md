@@ -141,6 +141,38 @@ heruntergeladen und über die TTS-/Wyoming-Schnittstelle bereitgestellt.
 Thorsten auf Hugging Face:
 https://huggingface.co/Thorsten-Voice/Kokoro
 
+
+## Stimmen manuell hinzufügen
+
+Kompatible Stimmen können auch manuell im Modellordner installiert werden.
+Dazu wird ein Unterordner mit `model.pth` und `voice.pt` angelegt.
+
+Beispiel für `kerstin_mod`:
+
+```text
+models/kerstin_mod/model.pth
+models/kerstin_mod/voice.pt
+```
+
+Für die getestete Variante wird das Martin-Modell als `model.pth` und das
+Kerstin-Voicepack `voices/df_kerstin.pt` als `voice.pt` verwendet.
+
+Für eine vollständig manuell installierte Stimme ist kein Eintrag in
+`KOKORO_EXTRA_VOICES` erforderlich.
+
+```text
+KOKORO_VOICES=martin,victoria,bernd,thorsten,kerstin_mod
+KOKORO_PRELOAD=martin,victoria,bernd,thorsten,kerstin_mod
+```
+
+Nach einem Neustart wird `kerstin_mod` über TTS/Wyoming bereitgestellt.
+
+Hinweis: Modell und Voicepack müssen kompatibel sein. Verschiedene Modelle
+können mit demselben Voicepack deutlich unterschiedlich klingen.
+
+Kerstin auf Hugging Face:
+https://huggingface.co/cryptomilk/kokoro-german-kerstin
+
 ## Umgebungsvariablen
 
 Standardwerte:
