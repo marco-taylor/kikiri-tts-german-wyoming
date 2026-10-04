@@ -126,7 +126,9 @@ WYOMING_TTS_CONCURRENT_REQUESTS=1
 KIKIRI_TTS_SYNTH_SPEED=1.00
 ```
 
-Je nach Release kann zusätzlich ein Betriebsmodus für Non-Streaming bzw. adaptive Ausgabe angeboten werden. Maßgeblich sind die im jeweiligen Unraid-Template bzw. Container definierten Variablen.
+`KIKIRI_TTS_MODE=adaptive` ist der Standard für Wyoming. Mit `KIKIRI_TTS_MODE=non_streaming` wird die vollständige Antwort vor der Wiedergabe erzeugt. Die HTTP-API liefert weiterhin eine vollständige WAV-Datei. Ein ausdrücklich gesetzter HTTP-Request-Parameter `speed` ungleich `1.0` behält seine bisherige native Speed-Bedeutung; normale Requests verwenden `KIKIRI_TTS_SYNTH_SPEED` mit Rückdehnung.
+
+Die variable Synthesegeschwindigkeit wird beim Containerstart gelesen. Eine Änderung benötigt kein neues Image; unter Unraid den geänderten Container über **Anwenden** neu erstellen. Ungültige Werte werden mit einer Fehlermeldung abgelehnt. Es wird immer nur ein Synthese-Worker verwendet; HTTP und Wyoming teilen sich die geladenen Modelle. Die adaptive RTF-Historie wird pro Speed und Stimme geführt und nach dem Neuerstellen eines Containers konservativ neu aufgebaut.
 
 ## Docker Build
 

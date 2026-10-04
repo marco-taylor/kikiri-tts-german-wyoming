@@ -7,6 +7,10 @@ import time
 import threading
 from pathlib import Path
 
+if __name__ == "__main__":
+    # Keep the standalone HTTP entry point on the same model cache.
+    sys.modules.setdefault("server", sys.modules[__name__])
+
 import numpy as np
 import soundfile as sf
 import torch
@@ -46,6 +50,7 @@ print(f"Config      : {CONFIG_PATH}", flush=True)
 # ---------------------------------------------------------
 # Stimmen automatisch finden
 # ---------------------------------------------------------
+
 
 def discover_voices():
     voices = {}
@@ -100,7 +105,6 @@ def load_voice(voice_name: str):
         return loaded_voices[voice_name]
 
     with load_lock:
-
         if voice_name in loaded_voices:
             return loaded_voices[voice_name]
 
@@ -114,11 +118,25 @@ def load_voice(voice_name: str):
 
         started = time.perf_counter()
 
-        model = KModel(
-            repo_id="hexgrad/Kokoro-82M",
-            config=str(CONFIG_PATH),
-            model=str(cfg["model"]),
-        ).to("cpu").eval()
+        model = (
+            KModel(
+                repo_id="hexgrad/Kokoro-82M",
+                config=str(CONFIG_PATH),
+                model=str(cfg["model"]),
+            )
+            .to("cpu")
+            .eval()
+        )
+
+        # Materialize once in FP32; no compiler or precision approximation.
+        for module in model.modules():
+            if (
+                hasattr(module, "parametrizations")
+                and "weight" in module.parametrizations
+            ):
+                torch.nn.utils.parametrize.remove_parametrizations(
+                    module, "weight", leave_parametrized=True
+                )
 
         pipeline = KPipeline(
             lang_code="d",
@@ -134,6 +152,7 @@ def load_voice(voice_name: str):
 
         loaded_voices[voice_name] = {
             "model": model,
+            "materialized": True,
             "pipeline": pipeline,
             "voice": voicepack,
             "lock": threading.Lock(),
@@ -153,6 +172,7 @@ def load_voice(voice_name: str):
 # Synthese
 # ---------------------------------------------------------
 
+
 def synthesize(text: str, voice_name: str, speed: float):
 
     runtime = load_voice(voice_name)
@@ -163,7 +183,6 @@ def synthesize(text: str, voice_name: str, speed: float):
 
     # Eine Pipeline nicht gleichzeitig aus mehreren Threads benutzen.
     with runtime["lock"], torch.inference_mode():
-
         generator = runtime["pipeline"](
             text,
             voice=runtime["voice"],
@@ -171,7 +190,6 @@ def synthesize(text: str, voice_name: str, speed: float):
         )
 
         for _, phonemes, audio in generator:
-
             if phonemes:
                 print(
                     f"[{voice_name}] Phoneme: {phonemes[:120]}",
@@ -199,9 +217,7 @@ def synthesize(text: str, voice_name: str, speed: float):
     rtf = elapsed / duration if duration else 0
 
     print(
-        f"[{voice_name}] Synthese={elapsed:.3f}s "
-        f"Audio={duration:.3f}s "
-        f"RTF={rtf:.3f}",
+        f"[{voice_name}] Synthese={elapsed:.3f}s Audio={duration:.3f}s RTF={rtf:.3f}",
         flush=True,
     )
 
@@ -260,13 +276,11 @@ def health():
 
 @app.get("/v1/audio/voices")
 def voices():
-    return {
-        "voices": list(VOICE_CONFIG.keys())
-    }
+    return {"voices": list(VOICE_CONFIG.keys())}
 
 
 @app.post("/v1/audio/speech")
-def speech(req: SpeechRequest):
+async def speech(req: SpeechRequest):
 
     voice_name = req.voice.lower().strip()
 
@@ -296,13 +310,9 @@ def speech(req: SpeechRequest):
     print(f"Text  : {text}", flush=True)
 
     try:
-        audio = synthesize(
-            text=text,
-            voice_name=voice_name,
-            speed=speed,
-        )
+        from tts_runtime.service import http_speech
 
-        wav = make_wav(audio)
+        wav = await http_speech(text, voice_name, speed)
 
         return Response(
             content=wav,
@@ -314,7 +324,6 @@ def speech(req: SpeechRequest):
         )
 
     except Exception as exc:
-
         print(
             f"TTS FEHLER: {exc!r}",
             flush=True,
@@ -330,22 +339,24 @@ def speech(req: SpeechRequest):
 # Optionaler Warmup
 # ---------------------------------------------------------
 
+
 @app.on_event("startup")
-def startup():
+async def startup():
+
+    from tts_runtime import service
+    from tts_runtime.config import Config
+
+    if service.policies is None:
+        service.initialize(Config.from_env())
 
     warmup = os.getenv(
         "KOKORO_PRELOAD",
         "martin,victoria",
     )
 
-    requested = [
-        x.strip().lower()
-        for x in warmup.split(",")
-        if x.strip()
-    ]
+    requested = [x.strip().lower() for x in warmup.split(",") if x.strip()]
 
     for voice_name in requested:
-
         if voice_name not in VOICE_CONFIG:
             print(
                 f"Warmup übersprungen: {voice_name} nicht vorhanden",
@@ -354,7 +365,12 @@ def startup():
             continue
 
         try:
-            load_voice(voice_name)
+            import asyncio
+            from tts_runtime.session import EXECUTOR
+
+            await asyncio.get_running_loop().run_in_executor(
+                EXECUTOR, load_voice, voice_name
+            )
 
         except Exception as exc:
             print(
@@ -364,7 +380,6 @@ def startup():
 
 
 if __name__ == "__main__":
-
     import uvicorn
 
     uvicorn.run(

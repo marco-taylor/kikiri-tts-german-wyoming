@@ -28,7 +28,7 @@ Fehlende Modelle werden beim Start automatisch heruntergeladen. Die Modelle werd
 Weitere Informationen und die Anleitung zum Hinzuf&#xFC;gen zus&#xE4;tzlicher Stimmen befinden sich in der README auf GitHub.</Overview>
   <Category>AI: HomeAutomation:</Category>
   <ExtraSearchTerms>tts text-to-speech german deutsch home assistant homeassistant wyoming kikiri kokoro voice sprachassistent</ExtraSearchTerms>
-  <Changes>Initial Community Applications release</Changes>
+  <Changes>Adaptive FP32 audio output, materialized WeightNorm and configurable synthesis speed. Default 1.00; 1.20 tested with Home Assistant on Intel N100.</Changes>
   <WebUI/>
   <TemplateURL>https://raw.githubusercontent.com/marco-taylor/kikiri-tts-german-wyoming/main/templates/kikiri-tts-german-wyoming.xml</TemplateURL>
   <Icon>https://raw.githubusercontent.com/marco-taylor/kikiri-tts-german-wyoming/main/icons/kikiri-tts.png</Icon>
@@ -51,5 +51,6 @@ Weitere Informationen und die Anleitung zum Hinzuf&#xFC;gen zus&#xE4;tzlicher St
   <Config Name="MKL-Threads" Target="MKL_NUM_THREADS" Default="4" Mode="" Description="Anzahl der MKL-CPU-Threads" Type="Variable" Display="advanced" Required="true" Mask="false">4</Config>
   <Config Name="OpenBLAS-Threads" Target="OPENBLAS_NUM_THREADS" Default="4" Mode="" Description="Anzahl der OpenBLAS-CPU-Threads" Type="Variable" Display="advanced" Required="true" Mask="false">4</Config>
   <Config Name="NumExpr-Threads" Target="NUMEXPR_NUM_THREADS" Default="4" Mode="" Description="Anzahl der NumExpr-CPU-Threads" Type="Variable" Display="advanced" Required="true" Mask="false">4</Config>
+  <Config Name="TTS Synthesis Speed" Target="KIKIRI_TTS_SYNTH_SPEED" Default="1.00" Mode="" Description="1.00 bietet die originale/höchste Qualität. Werte über 1.00 können auf langsameren CPUs die Reaktionszeit reduzieren. Die Ausgabe wird anschließend tonhöhenneutral auf natürliche Wiedergabegeschwindigkeit zurückgedehnt. 1.20 wurde erfolgreich auf einem Intel N100 mit Home Assistant getestet. Empfohlener Bereich 1.00–1.20; Maximum 1.25. Dezimalwerte wie 1.175 sind zulässig." Type="Variable" Display="always" Required="true" Mask="false">1.00</Config>
   <TailscaleStateDir/>
 </Container>

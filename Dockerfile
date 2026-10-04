@@ -1,5 +1,12 @@
-FROM python:3.12-slim-bookworm
+FROM python:3.12-slim-bookworm AS soundtouch-build
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends g++ libsoundtouch-dev \
+    && rm -rf /var/lib/apt/lists/*
+COPY tts_runtime/soundtouch_shim.cpp /build/soundtouch_shim.cpp
+RUN g++ -O2 -shared -fPIC /build/soundtouch_shim.cpp -lSoundTouch \
+    -o /build/libkikiri_soundtouch.so
 
+FROM python:3.12-slim-bookworm
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     PIP_NO_CACHE_DIR=1 \
@@ -11,74 +18,31 @@ ENV PYTHONUNBUFFERED=1 \
     MKL_NUM_THREADS=4 \
     OPENBLAS_NUM_THREADS=4 \
     NUMEXPR_NUM_THREADS=4 \
-    WYOMING_TTS_CONCURRENT_REQUESTS=1
-
+    WYOMING_TTS_CONCURRENT_REQUESTS=1 \
+    KIKIRI_TTS_SYNTH_SPEED=1.00 \
+    KIKIRI_TTS_MODE=adaptive
 WORKDIR /app
-
-# ---------------------------------------------------------
-# System-Abhängigkeiten + Python-Pakete
-# ---------------------------------------------------------
+COPY requirements.txt /tmp/requirements.txt
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-        espeak-ng \
-        libsndfile1 \
-        curl \
-        git \
-    \
-    # PyTorch CPU-only
-    && pip install --no-cache-dir \
-        --index-url https://download.pytorch.org/whl/cpu \
-        torch \
-    \
-    # Laufzeit-Abhängigkeiten
-    && pip install --no-cache-dir \
-        numpy \
-        soundfile \
-        fastapi \
-        "uvicorn[standard]" \
-        huggingface_hub \
-        loguru \
-        transformers \
-        wyoming_openai \
-    \
-    # Kikiri German Misaki Fork - nur deutsche Abhängigkeiten
-    && pip install --no-cache-dir \
-        "misaki[de] @ git+https://github.com/semidark/misaki.git" \
-    \
-    # Build-Abhängigkeiten und Caches entfernen
+    && apt-get install -y --no-install-recommends espeak-ng libsndfile1 libsoundtouch1 curl git \
+    && pip install --no-cache-dir --index-url https://download.pytorch.org/whl/cpu torch==2.14.0 \
+    && pip install --no-cache-dir -r /tmp/requirements.txt \
     && apt-get purge -y --auto-remove git \
-    && rm -rf /var/lib/apt/lists/* \
-    && rm -rf /root/.cache/pip \
-    && find /usr/local/lib/python3.12/site-packages \
-        -type d -name "__pycache__" -prune -exec rm -rf '{}' +
-
-# ---------------------------------------------------------
-# Kikiri / Kokoro
-# ---------------------------------------------------------
+    && rm -rf /var/lib/apt/lists/* /root/.cache/pip /tmp/requirements.txt \
+    && find /usr/local/lib/python3.12/site-packages -type d -name __pycache__ -prune -exec rm -rf '{}' +
+COPY --from=soundtouch-build /build/libkikiri_soundtouch.so /usr/local/lib/libkikiri_soundtouch.so
 COPY kokoro /app/kokoro
 COPY training /app/training
-COPY server.py /app/server.py
-COPY download_models.py /app/download_models.py
-
-# ---------------------------------------------------------
-# German Wyoming Separator
-# ---------------------------------------------------------
-COPY german_text_rules.py \
-     /usr/local/lib/python3.12/site-packages/german_text_rules.py
-
-COPY wyoming_patch/apply_german_separator_patch.py \
-     /tmp/apply_german_separator_patch.py
-
-RUN python /tmp/apply_german_separator_patch.py \
-    && rm -f /tmp/apply_german_separator_patch.py
-
-# ---------------------------------------------------------
-# Start
-# ---------------------------------------------------------
-COPY start.sh /app/start.sh
-
-RUN chmod +x /app/start.sh
-
+COPY server.py download_models.py start.sh /app/
+COPY tts_runtime/*.py /app/tts_runtime/
+COPY LICENSE NOTICE /app/
+COPY german_text_rules.py /usr/local/lib/python3.12/site-packages/german_text_rules.py
+COPY wyoming_patch /tmp/wyoming_patch
+RUN python /tmp/wyoming_patch/apply_german_separator_patch.py \
+    && python /tmp/wyoming_patch/apply_project_name_patch.py \
+    && rm -rf /tmp/wyoming_patch \
+    && chmod +x /app/start.sh
 EXPOSE 10203
-
+HEALTHCHECK --interval=30s --timeout=5s --start-period=120s \
+    CMD curl -fsS http://127.0.0.1:8881/health || exit 1
 CMD ["/app/start.sh"]

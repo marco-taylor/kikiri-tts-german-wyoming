@@ -30,3 +30,8 @@ Home Assistant, Unraid, or their respective developers or organizations.
 
 Project:
 https://github.com/marco-taylor/kikiri-tts-german-wyoming
+
+SoundTouch (unmodified dynamically linked runtime library, LGPL-2.1-or-later)
+https://www.surina.net/soundtouch/
+https://salsa.debian.org/multimedia-team/soundtouch
+Debian package copyright and license: /usr/share/doc/libsoundtouch1/copyright

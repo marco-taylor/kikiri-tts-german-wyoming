@@ -23,3 +23,20 @@ venv/
 .idea/
 .DS_Store
 Thumbs.db
+
+# Local audio, diagnostics and build artifacts (not runtime sources)
+evidence/
+experiments/
+benchmarks/
+logs/
+*.wav
+*.pcm
+*.npy
+*.npz
+*.log
+*.so
+build/
+dist/
+*.egg-info/
+.env
+.env.*
